@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FrigoLab — Cours & Outils Technicien Froid</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#ff6a00" />
+</head>
+
+<body>
+  <div id="desktop" class="desktop" aria-label="Bureau FrigoLab">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">❄️</div>
+        <div class="brandText">
+          <div class="brandTitle">FrigoLab</div>
+          <div class="brandSub">Cours modernes • Fluides • Composants • Calculs technicien</div>
+        </div>
+      </div>
+
+      <div class="topActions">
+        <button class="chip" id="btnNewNote" title="Ouvrir le Bloc-notes">📝 Note</button>
+        <button class="chip" id="btnOpenAll" title="Ouvrir toutes les fenêtres">🪟 Ouvrir tout</button>
+        <button class="chip" id="btnTheme" title="Changer le thème">🎨 Thème</button>
+      </div>
+    </header>
+
+    <section class="iconGrid" aria-label="Raccourcis">
+      <button class="deskIcon" data-open="win-intro">
+        <span class="ico">📚</span><span class="lbl">Cours</span>
+      </button>
+      <button class="deskIcon" data-open="win-refrigerants">
+        <span class="ico">🧪</span><span class="lbl">Fluides</span>
+      </button>
+      <button class="deskIcon" data-open="win-components">
+        <span class="ico">🧰</span><span class="lbl">Composants</span>
+      </button>
+      <button class="deskIcon" data-open="win-calculators">
+        <span class="ico">🧮</span><span class="lbl">Calculateurs</span>
+      </button>
+      <button class="deskIcon" data-open="win-phdiagram">
+        <span class="ico">📈</span><span class="lbl">P-h</span>
+      </button>
+      <button class="deskIcon" data-open="win-converter">
+        <span class="ico">🔁</span><span class="lbl">Convertisseur</span>
+      </button>
+      <button class="deskIcon" data-open="win-videos">
+        <span class="ico">🎬</span><span class="lbl">Vidéos</span>
+      </button>
+      <button class="deskIcon" data-open="win-diagnostics">
+        <span class="ico">🔎</span><span class="lbl">Diagnostic</span>
+      </button>
+      <button class="deskIcon" data-open="win-safety">
+        <span class="ico">🦺</span><span class="lbl">Sécurité</span>
+      </button>
+    </section>
+
+    <!-- 🎬 Zone vidéos sur le bureau -->
+    <section class="videoDock" aria-label="Vidéos du cours">
+      <div class="dockHead">
+        <div class="dockTitle">🎬 Vidéos du cours</div>
+        <button class="chip" id="btnOpenVideos">Ouvrir en fenêtre</button>
+      </div>
+
+      <div class="videoGrid">
+        <article class="videoCard">
+          <div class="videoMeta">
+            <div>
+              <div class="videoName">Vidéo 1</div>
+              <div class="videoSub">YouTube • intégré</div>
+            </div>
+            <span class="badge"><strong>Cycle</strong></span>
+          </div>
+          <div class="videoFrame">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/m6qXZJXNGpQ"
+              title="Vidéo 1"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </article>
+
+        <article class="videoCard">
+          <div class="videoMeta">
+            <div>
+              <div class="videoName">Vidéo 2</div>
+              <div class="videoSub">YouTube • intégré</div>
+            </div>
+            <span class="badge"><strong>Cycle</strong></span>
+          </div>
+          <div class="videoFrame">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/j9KwDp6RugM"
+              title="Vidéo 2"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Layer plein écran pour bouger les fenêtres partout -->
+    <div id="windowsLayer" class="windowsLayer" aria-label="Fenêtres"></div>
+
+    <footer class="taskbar" aria-label="Barre des tâches">
+      <button id="startBtn" class="startBtn" aria-haspopup="true" aria-expanded="false" title="Menu">
+        <span class="startMark">⎈</span>
+        <span class="startText">Start</span>
+      </button>
+
+      <div id="taskbarApps" class="taskbarApps" aria-label="Applications"></div>
+
+      <div class="taskbarRight">
+        <div id="clock" class="clock" aria-label="Heure"></div>
+      </div>
+    </footer>
+
+    <div id="startMenu" class="startMenu" role="menu" aria-label="Menu Start" hidden>
+      <div class="startHeader">
+        <div class="startAvatar">❄️</div>
+        <div>
+          <div class="startTitle">FrigoLab</div>
+          <div class="startSub">Espace élève / technicien</div>
+        </div>
+      </div>
+
+      <div class="startSearch">
+        <input id="globalSearch" type="search" placeholder="Rechercher : R290, compresseur, COP, P-h..." />
+      </div>
+
+      <div class="startGrid">
+        <button class="startItem" data-open="win-intro">📚 Cours complet</button>
+        <button class="startItem" data-open="win-refrigerants">🧪 Base fluides</button>
+        <button class="startItem" data-open="win-components">🧰 Composants</button>
+        <button class="startItem" data-open="win-calculators">🧮 Calculateurs</button>
+        <button class="startItem" data-open="win-phdiagram">📈 Diagramme P-h</button>
+        <button class="startItem" data-open="win-converter">🔁 Convertisseur</button>
+        <button class="startItem" data-open="win-videos">🎬 Vidéos</button>
+        <button class="startItem" data-open="win-diagnostics">🔎 Diagnostic</button>
+        <button class="startItem" data-open="win-safety">🦺 Sécurité</button>
+        <button class="startItem" id="startNewNote">📝 Bloc-notes</button>
+      </div>
+
+      <div class="startFooter">
+        <button class="ghost" id="btnAbout">À propos</button>
+        <button class="ghost" id="btnResetLayout">Réinitialiser fenêtres</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
