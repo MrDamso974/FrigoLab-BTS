@@ -2,7 +2,8 @@ window.FRIGOLAB_DATA = {
   refrigerants: [
     { name:"R134a", family:"HFC", safety:"A1", odp:0, gwp:1430, glide:"≈0 K", uses:"Froid commercial léger, auto (ancien)", notes:"Transition vers HFO / mélanges." },
     { name:"R404A", family:"HFC Blend", safety:"A1", odp:0, gwp:3922, glide:"faible", uses:"Froid négatif (ancien)", notes:"Fort GWP → remplacé par R448A/R449A." },
-    { name:"R410A", family:"HFC Blend", safety:"A1", odp:0, gwp:2088, glide:"faible", uses:"Clim/HP (ancien)", notes:"Transition vers R32 / R454B etc." },
+    { name:"R410A", family:"HFC Blend", safety:"A1", odp:0, gwp:2088, glide:"faible", uses:"Clim/HP (ancien)", notes:"Transition vers R32 / mélanges A2L." },
+    { name:"R32", family:"HFC", safety:"A2L", odp:0, gwp:675, glide:"≈0 K", uses:"Clim/HP", notes:"A2L : procédures adaptées." },
 
     { name:"R1234yf", family:"HFO", safety:"A2L", odp:0, gwp:4, glide:"≈0 K", uses:"Automobile", notes:"A2L → procédures adaptées." },
     { name:"R1234ze(E)", family:"HFO", safety:"A2L", odp:0, gwp:7, glide:"≈0 K", uses:"Chillers", notes:"A2L." },

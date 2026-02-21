@@ -26,6 +26,7 @@ html,body{ height:100%; margin:0; font-family:var(--font); color:var(--text);
 
 button, input, select, textarea{ font-family:inherit; color:inherit; }
 a{ color:inherit; }
+code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
 .desktop{
   height:100%;
@@ -74,7 +75,7 @@ a{ color:inherit; }
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap:14px;
   padding: 10px 16px 0 16px;
-  max-width: 1050px;
+  max-width: 1150px;
   position:relative;
   z-index: 4;
 }
@@ -250,7 +251,7 @@ a{ color:inherit; }
   position: fixed;
   left: 12px;
   bottom: 70px;
-  width: min(420px, calc(100vw - 24px));
+  width: min(440px, calc(100vw - 24px));
   border-radius: 22px;
   border:1px solid var(--stroke);
   background: linear-gradient(180deg, rgba(17,26,38,.92), rgba(12,18,28,.88));
@@ -413,9 +414,9 @@ a{ color:inherit; }
   border:1px solid rgba(255,106,0,.18);
 }
 
-/* ===== Video Dock (zone vide bureau) ===== */
+/* ===== Video Dock (zone bureau) ===== */
 .videoDock{
-  max-width: 1050px;
+  max-width: 1150px;
   margin: 16px 16px 90px 16px;
   border: 1px solid var(--stroke);
   background: rgba(255,255,255,.04);

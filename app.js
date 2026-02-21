@@ -64,7 +64,7 @@
     const w = state.windows.get(id);
     if (!w) return;
 
-    // stop youtube/iframes
+    // stop iframes (youtube)
     w.el.querySelectorAll("iframe").forEach(f => f.src = f.src);
 
     w.el.remove();
@@ -77,12 +77,11 @@
     winEl.dataset.max = yes ? "true" : "false";
   }
 
-  // ---------- Dragging (plein écran) ----------
+  // ---------- Dragging ----------
   function enableDrag(winEl, handle){
     let startX=0, startY=0, startL=0, startT=0, dragging=false;
 
     handle.addEventListener("pointerdown", (e) => {
-      // ✅ ne pas drag quand on clique sur les boutons
       if (e.target.closest(".winControls")) return;
       if (winEl.dataset.max === "true") return;
 
@@ -110,7 +109,7 @@
     handle.addEventListener("pointercancel", () => dragging = false);
   }
 
-  // ---------- Resizing (plein écran) ----------
+  // ---------- Resizing ----------
   function enableResize(winEl, handle){
     let startX=0, startY=0, startW=0, startH=0, resizing=false;
 
@@ -159,14 +158,14 @@
     `).join("");
 
     return `
-      <div class="h1">Cours complet — Froid & Clim (version élève)</div>
+      <div class="h1">Cours complet — Froid & Clim (BTS / terrain)</div>
       <p class="p">
         Objectif : comprendre le <strong>cycle frigorifique</strong>, connaître les <strong>composants</strong>,
         maîtriser les <strong>mesures terrain</strong> (P/T, surchauffe, sous-refroidissement) et diagnostiquer.
       </p>
 
       <div class="tip">
-        <strong>Rappel terrain :</strong> on mesure l’échange (air/eau), puis on ajuste (charge/régulation) avec procédure.
+        <strong>Méthode terrain :</strong> état échangeurs → pressions → températures → SH/SC → intensités → conclusion.
       </div>
 
       <div class="h2">1) Architectures de systèmes</div>
@@ -182,7 +181,7 @@
       </div>
 
       <hr class="hr" />
-      <div class="h2">3) Indicateurs terrain (ordres de grandeur)</div>
+      <div class="h2">3) Ordres de grandeur (indicatifs)</div>
       <div class="kpiRow">
         <div class="kpi"><div class="t">Surchauffe (SH)</div><div class="v">≈ 5 à 12 K</div><div class="small">selon système</div></div>
         <div class="kpi"><div class="t">Sous-refroidissement (SC)</div><div class="v">≈ 2 à 8 K</div><div class="small">selon condenseur/charge</div></div>
@@ -379,7 +378,7 @@
     return `
       <div class="h1">À propos</div>
       <p class="p">
-        FrigoLab est un site pédagogique “style bureau” pour apprendre le froid et pratiquer les calculs.
+        FrigoLab est un site pédagogique “style bureau” pour BTS maintenance / techniciens froid.
         Tu peux modifier les données dans <code>data.js</code>.
       </p>
     `;
@@ -529,85 +528,234 @@
     `;
   }
 
-  // ---------- Window plumbing ----------
-  function hydrateWindow(winEl, id){
-    if (id === "win-refrigerants") renderRefrigerants(winEl);
-    if (id === "win-calculators") bindCalculators(winEl);
-    if (id === "win-note") bindNote(winEl);
-    if (id === "win-phdiagram") bindPhDiagram(winEl);
-    if (id === "win-converter") bindConverter(winEl);
-  }
+  // ✅ MTBF / BTS
+  function mtbfHTML(){
+    return `
+      <div class="h1">MTBF & Fiabilité — BTS Maintenance (froid)</div>
+      <p class="p">
+        Objectif : piloter un parc (vitrines, chambres froides, chillers…) via indicateurs : pannes, temps d’arrêt, disponibilité.
+      </p>
 
-  function openWindow(def){
-    const { id, title, icon, badge, contentHTML, width=720, height=520 } = def;
-
-    if (state.windows.has(id)){
-      const w = state.windows.get(id);
-      w.minimized = false;
-      w.el.hidden = false;
-      bringToFront(w.el);
-      return;
-    }
-
-    const win = document.createElement("section");
-    win.className = "window";
-    win.dataset.id = id;
-    win.dataset.max = "false";
-
-    const left = Math.round(40 + Math.random()*140);
-    const top  = Math.round(110 + Math.random()*120);
-
-    win.style.left = `${left}px`;
-    win.style.top  = `${top}px`;
-    win.style.width  = `${Math.min(width, window.innerWidth - 20)}px`;
-    win.style.height = `${Math.min(height, window.innerHeight - 120)}px`;
-
-    win.innerHTML = `
-      <div class="winTitlebar">
-        <div class="winTitle">
-          <span aria-hidden="true">${icon}</span>
-          <span>${title}</span>
-          ${badge ? `<span class="winBadge">${badge}</span>` : ""}
+      <div class="grid2">
+        <div class="card">
+          <div style="font-weight:900;">📌 Définitions</div>
+          <ul class="p">
+            <li><strong>MTBF</strong> : temps moyen entre pannes.</li>
+            <li><strong>MTTR</strong> : temps moyen de réparation.</li>
+            <li><strong>Disponibilité</strong> : proportion de temps où l’installation est opérationnelle.</li>
+            <li><strong>Fiabilité</strong> : probabilité de fonctionner sans panne sur une durée t.</li>
+          </ul>
         </div>
-        <div class="winControls">
-          <button class="winBtn" data-act="min" title="Réduire">—</button>
-          <button class="winBtn" data-act="max" title="Agrandir">▢</button>
-          <button class="winBtn close" data-act="close" title="Fermer">✕</button>
+
+        <div class="card">
+          <div style="font-weight:900;">🧮 Formules</div>
+          <ul class="p">
+            <li><strong>MTBF</strong> = Temps de fonctionnement / Nb pannes</li>
+            <li><strong>MTTR</strong> = Temps de réparation / Nb pannes</li>
+            <li><strong>A</strong> ≈ MTBF / (MTBF + MTTR)</li>
+            <li>λ ≈ 1/MTBF (modèle simple)</li>
+            <li>R(t)=e<sup>-λt</sup> (si λ constant)</li>
+          </ul>
         </div>
       </div>
-      <div class="winBody">${contentHTML}</div>
-      <div class="resizeHandle" title="Redimensionner"></div>
+
+      <div class="h2">Approche BTS</div>
+      <div class="grid2">
+        <div class="card">
+          <div style="font-weight:900;">🧠 RCM (maintenance centrée fiabilité)</div>
+          <ul class="p">
+            <li>Préventif : nettoyage condenseur, contrôle ventilateurs</li>
+            <li>Conditionnel : dérive ΔT, intensité compresseur</li>
+            <li>Correctif : panne → action + retour d’expérience</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div style="font-weight:900;">🧯 AMDEC</div>
+          <p class="p">Criticité : C = Gravité × Occurrence × Détection</p>
+          <p class="p">Ex : ventilateur condenseur HS → HP haute → arrêt sécurité.</p>
+        </div>
+      </div>
+
+      <hr class="hr" />
+      <div class="h2">Calculateur</div>
+      <div class="grid2">
+        <div class="card">
+          <div style="font-weight:900;">MTBF / MTTR / Disponibilité</div>
+          <div class="row">
+            <input class="input" id="rel_time" type="number" step="0.01" placeholder="Temps fonctionnement (h)">
+            <input class="input" id="rel_fail" type="number" step="1" placeholder="Nombre pannes">
+            <input class="input" id="rel_repair" type="number" step="0.01" placeholder="Temps réparation total (h)">
+            <button class="btn" id="btnRelCalc">Calculer</button>
+          </div>
+          <div class="badge" id="rel_out" style="margin-top:10px;" hidden></div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:900;">Fiabilité R(t) (modèle simple)</div>
+          <div class="row">
+            <input class="input" id="rel_mtbf" type="number" step="0.01" placeholder="MTBF (h)">
+            <input class="input" id="rel_t" type="number" step="0.01" placeholder="t (h)">
+            <button class="btn" id="btnRelR">Calculer</button>
+          </div>
+          <div class="badge" id="rel_out2" style="margin-top:10px;" hidden></div>
+          <p class="small">Pédagogique : en réel, λ varie (usure, encrassement, fuite…).</p>
+        </div>
+      </div>
     `;
+  }
 
-    win.addEventListener("pointerdown", () => bringToFront(win));
+  // ✅ Réglementation UE
+  function regsHTML(){
+    return `
+      <div class="h1">Réglementation UE — fluides frigorigènes (résumé BTS)</div>
+      <p class="p">Points clés : réduction HFC, contrôle étanchéité, récupération, traçabilité, sécurité.</p>
 
-    const titlebar = win.querySelector(".winTitlebar");
-    const resize = win.querySelector(".resizeHandle");
-    enableDrag(win, titlebar);
-    enableResize(win, resize);
+      <div class="grid2">
+        <div class="card">
+          <div style="font-weight:900;">📌 F-Gas (gaz fluorés)</div>
+          <ul class="p">
+            <li>Objectif : diminuer les émissions et réduire les HFC à fort GWP (phase-down).</li>
+            <li>Obligations de récupération et d’éviter les rejets.</li>
+            <li>Restrictions progressives selon usages.</li>
+          </ul>
+        </div>
 
-    // ✅ boutons control : stop propagation
-    win.querySelectorAll(".winBtn").forEach(btn=>{
-      btn.addEventListener("pointerdown", (e) => e.stopPropagation());
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const act = btn.dataset.act;
-        if (act === "min") toggleMinimize(id);
-        if (act === "close") closeWindow(id);
-        if (act === "max"){
-          const yes = win.dataset.max !== "true";
-          setMaximize(win, yes);
-          bringToFront(win);
-        }
-      });
-    });
+        <div class="card">
+          <div style="font-weight:900;">🧾 Contrôle étanchéité / registre</div>
+          <ul class="p">
+            <li>Suivi des charges et opérations (ajout/récupération).</li>
+            <li>Réparation fuites + vérification après réparation.</li>
+            <li>Traçabilité (fiche intervention / registre équipement).</li>
+          </ul>
+        </div>
 
-    layer.appendChild(win);
-    bringToFront(win);
+        <div class="card">
+          <div style="font-weight:900;">🧑‍🏫 Compétences / procédures</div>
+          <ul class="p">
+            <li>Personnel formé et procédures de récupération.</li>
+            <li>Charge à la balance, tirage au vide, contrôle fuite.</li>
+            <li>Bonnes pratiques pour limiter pertes + préserver performance énergétique.</li>
+          </ul>
+        </div>
 
-    state.windows.set(id, { el: win, minimized:false, title, icon });
-    createTaskButton({id, title, icon});
-    hydrateWindow(win, id);
+        <div class="card">
+          <div style="font-weight:900;">🔥 Sécurité A2L / A3 / NH₃ / CO₂</div>
+          <ul class="p">
+            <li>A2L/A3 : inflammabilité → ventilation, zones, sources d’ignition.</li>
+            <li>NH₃ : toxicité → détecteurs / local technique.</li>
+            <li>CO₂ : très haute pression → composants adaptés + procédures.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top:12px;">
+        Pour une version “fiche BTS” : je peux ajouter un tableau (obligation → action terrain).
+      </div>
+    `;
+  }
+
+  // ✅ Pressions saturation (tables + interpolation)
+  function pressureHTML(){
+    return `
+      <div class="h1">Pression de saturation — outil BTS (tables)</div>
+      <p class="p">
+        Tu entres une température de saturation (°C) → pression saturante estimée (bar abs).
+        <br/>⚠️ Pédagogique : pour un dimensionnement/terrain, utiliser tables/logiciels officiels.
+      </p>
+
+      <div class="grid2">
+        <div class="card">
+          <div style="font-weight:900;">🌡️ Calcul</div>
+          <div class="row">
+            <select id="ps_fluid">
+              <option value="R134a">R134a</option>
+              <option value="R404A">R404A (approx)</option>
+              <option value="R410A">R410A (approx)</option>
+              <option value="R32">R32 (approx)</option>
+              <option value="R290">R290 (propane)</option>
+              <option value="R600a">R600a (isobutane)</option>
+              <option value="R744">R744 (CO₂) (approx)</option>
+            </select>
+
+            <input class="input" id="ps_T" type="number" step="0.1" placeholder="Température sat (°C)">
+            <button class="btn" id="btnPsCalc">Calculer</button>
+            <button class="btn" id="btnPsExample">Exemple</button>
+          </div>
+
+          <div class="badge" id="ps_out" style="margin-top:10px;" hidden></div>
+
+          <div class="tip" style="margin-top:12px;">
+            Résultat en <strong>bar abs</strong>. Pour un manomètre “relatif” : ≈ abs − 1 bar.
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:900;">📘 Rappel terrain</div>
+          <ul class="p">
+            <li>BP ↔ T d’évaporation (sat)</li>
+            <li>HP ↔ T de condensation (sat)</li>
+            <li>Ensuite : calculer SH et SC avec les T mesurées</li>
+          </ul>
+          <div class="h2">Limites</div>
+          <p class="p">Mélanges : possible “glide” (bubble/dew). Ici c’est simplifié.</p>
+        </div>
+      </div>
+
+      <div class="h2">Mini-table affichée</div>
+      <div class="card" style="padding:0;">
+        <table class="table" style="margin:0;">
+          <thead><tr><th>T (°C)</th><th>P (bar abs)</th></tr></thead>
+          <tbody id="ps_table"><tr><td colspan="2">Choisis un fluide.</td></tr></tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  // ---------- Helpers: tables P(T) ----------
+  // Tables approximatives bar abs (pédagogiques).
+  // Interpolation sur ln(P) pour un rendu plus réaliste.
+  const PS_TABLES = {
+    // T(°C): P(bar abs)
+    "R134a": [
+      [-30, 0.72], [-20, 1.19], [-10, 1.92], [0, 3.05], [10, 4.72], [20, 7.00], [30, 10.05], [40, 14.0], [50, 19.0]
+    ],
+    "R404A": [
+      [-40, 0.86], [-30, 1.43], [-20, 2.30], [-10, 3.60], [0, 5.50], [10, 8.20], [20, 11.9], [30, 16.8], [40, 23.0]
+    ],
+    "R410A": [
+      [-30, 2.20], [-20, 3.40], [-10, 5.10], [0, 7.60], [10, 10.9], [20, 15.2], [30, 20.6], [40, 27.4], [50, 35.6]
+    ],
+    "R32": [
+      [-30, 1.75], [-20, 2.85], [-10, 4.40], [0, 6.60], [10, 9.60], [20, 13.5], [30, 18.6], [40, 24.9], [50, 32.7]
+    ],
+    "R290": [
+      [-40, 0.62], [-30, 1.00], [-20, 1.58], [-10, 2.45], [0, 3.70], [10, 5.50], [20, 8.00], [30, 11.4], [40, 16.0]
+    ],
+    "R600a": [
+      [-40, 0.28], [-30, 0.45], [-20, 0.70], [-10, 1.05], [0, 1.55], [10, 2.22], [20, 3.12], [30, 4.35], [40, 5.95]
+    ],
+    "R744": [
+      [-30, 14.0], [-20, 18.0], [-10, 23.0], [0, 29.0], [10, 36.0], [20, 44.0], [25, 50.0], [30, 57.0]
+    ]
+  };
+
+  function interpLnP(table, T){
+    // table sorted by T
+    const pts = table.slice().sort((a,b)=>a[0]-b[0]);
+    const Tmin = pts[0][0], Tmax = pts[pts.length-1][0];
+    if (T < Tmin || T > Tmax) return { ok:false, msg:`Hors plage table (${Tmin} à ${Tmax}°C)` };
+
+    // find bracket
+    let i=0;
+    while(i < pts.length-1 && T > pts[i+1][0]) i++;
+    const [T1,P1] = pts[i];
+    const [T2,P2] = pts[i+1];
+
+    if (T2 === T1) return { ok:true, P:P1 };
+
+    const x = (T - T1)/(T2 - T1);
+    const lnP = Math.log(P1) + x*(Math.log(P2) - Math.log(P1));
+    return { ok:true, P: Math.exp(lnP) };
   }
 
   // ---------- Binders ----------
@@ -764,6 +912,83 @@
     });
   }
 
+  function bindReliability(winEl){
+    const show = (el, txt) => { el.hidden=false; el.textContent=txt; };
+
+    winEl.querySelector("#btnRelCalc").addEventListener("click", () => {
+      const t = Number(winEl.querySelector("#rel_time").value);
+      const f = Number(winEl.querySelector("#rel_fail").value);
+      const r = Number(winEl.querySelector("#rel_repair").value);
+
+      const out = winEl.querySelector("#rel_out");
+      if(!Number.isFinite(t) || !Number.isFinite(f) || !Number.isFinite(r) || t<=0 || f<=0 || r<0){
+        return show(out, "⚠️ Saisis : temps>0, pannes>0, réparation≥0");
+      }
+
+      const mtbf = t / f;
+      const mttr = r / f;
+      const A = mtbf / (mtbf + mttr);
+      show(out, `MTBF=${mtbf.toFixed(2)} h • MTTR=${mttr.toFixed(2)} h • Disponibilité A=${(A*100).toFixed(1)}%`);
+    });
+
+    winEl.querySelector("#btnRelR").addEventListener("click", () => {
+      const mtbf = Number(winEl.querySelector("#rel_mtbf").value);
+      const tt = Number(winEl.querySelector("#rel_t").value);
+      const out = winEl.querySelector("#rel_out2");
+
+      if(!Number.isFinite(mtbf) || !Number.isFinite(tt) || mtbf<=0 || tt<0){
+        return show(out, "⚠️ MTBF>0 et t≥0");
+      }
+
+      const lambda = 1/mtbf;
+      const R = Math.exp(-lambda * tt);
+      show(out, `λ≈${lambda.toExponential(3)} 1/h • R(t)≈${(R*100).toFixed(2)}%`);
+    });
+  }
+
+  function bindPressure(winEl){
+    const show = (el, txt) => { el.hidden=false; el.textContent=txt; };
+
+    const sel = winEl.querySelector("#ps_fluid");
+    const inpT = winEl.querySelector("#ps_T");
+    const out = winEl.querySelector("#ps_out");
+    const tbody = winEl.querySelector("#ps_table");
+
+    function renderTable(fluid){
+      const t = PS_TABLES[fluid];
+      if(!t){
+        tbody.innerHTML = `<tr><td colspan="2">Aucune table.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = t.map(([Tc,P]) => `<tr><td>${Tc}</td><td>${P.toFixed(2)}</td></tr>`).join("");
+    }
+
+    function compute(){
+      const fluid = sel.value;
+      const Tc = Number(inpT.value);
+      if(!Number.isFinite(Tc)) return show(out, "⚠️ Température invalide");
+
+      const table = PS_TABLES[fluid];
+      if(!table) return show(out, "⚠️ Fluide non supporté");
+
+      const r = interpLnP(table, Tc);
+      if(!r.ok) return show(out, `⚠️ ${r.msg}`);
+
+      const Pabs = r.P;
+      const Prel = Math.max(0, Pabs - 1.0);
+      show(out, `${fluid} à ${Tc.toFixed(1)}°C → P(sat)≈ ${Pabs.toFixed(2)} bar abs (≈ ${Prel.toFixed(2)} bar relatif)`);
+    }
+
+    sel.addEventListener("change", () => renderTable(sel.value));
+    winEl.querySelector("#btnPsCalc").addEventListener("click", compute);
+    winEl.querySelector("#btnPsExample").addEventListener("click", () => {
+      inpT.value = "0";
+      compute();
+    });
+
+    renderTable(sel.value);
+  }
+
   function bindPhDiagram(winEl){
     const canvas = winEl.querySelector("#phCanvas");
     const ctx = canvas.getContext("2d");
@@ -913,19 +1138,104 @@
     clear(); drawBackground({hMin:200,hMax:500,pMin:0.5,pMax:20});
   }
 
+  // ---------- Window plumbing ----------
+  function hydrateWindow(winEl, id){
+    if (id === "win-refrigerants") renderRefrigerants(winEl);
+    if (id === "win-calculators") bindCalculators(winEl);
+    if (id === "win-note") bindNote(winEl);
+    if (id === "win-phdiagram") bindPhDiagram(winEl);
+    if (id === "win-converter") bindConverter(winEl);
+    if (id === "win-mtbf") bindReliability(winEl);
+    if (id === "win-pressure") bindPressure(winEl);
+  }
+
+  function openWindow(def){
+    const { id, title, icon, badge, contentHTML, width=720, height=520 } = def;
+
+    if (state.windows.has(id)){
+      const w = state.windows.get(id);
+      w.minimized = false;
+      w.el.hidden = false;
+      bringToFront(w.el);
+      return;
+    }
+
+    const win = document.createElement("section");
+    win.className = "window";
+    win.dataset.id = id;
+    win.dataset.max = "false";
+
+    const left = Math.round(40 + Math.random()*140);
+    const top  = Math.round(110 + Math.random()*120);
+
+    win.style.left = `${left}px`;
+    win.style.top  = `${top}px`;
+    win.style.width  = `${Math.min(width, window.innerWidth - 20)}px`;
+    win.style.height = `${Math.min(height, window.innerHeight - 120)}px`;
+
+    win.innerHTML = `
+      <div class="winTitlebar">
+        <div class="winTitle">
+          <span aria-hidden="true">${icon}</span>
+          <span>${title}</span>
+          ${badge ? `<span class="winBadge">${badge}</span>` : ""}
+        </div>
+        <div class="winControls">
+          <button class="winBtn" data-act="min" title="Réduire">—</button>
+          <button class="winBtn" data-act="max" title="Agrandir">▢</button>
+          <button class="winBtn close" data-act="close" title="Fermer">✕</button>
+        </div>
+      </div>
+      <div class="winBody">${contentHTML}</div>
+      <div class="resizeHandle" title="Redimensionner"></div>
+    `;
+
+    win.addEventListener("pointerdown", () => bringToFront(win));
+
+    const titlebar = win.querySelector(".winTitlebar");
+    const resize = win.querySelector(".resizeHandle");
+    enableDrag(win, titlebar);
+    enableResize(win, resize);
+
+    win.querySelectorAll(".winBtn").forEach(btn=>{
+      btn.addEventListener("pointerdown", (e) => e.stopPropagation());
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const act = btn.dataset.act;
+        if (act === "min") toggleMinimize(id);
+        if (act === "close") closeWindow(id);
+        if (act === "max"){
+          const yes = win.dataset.max !== "true";
+          setMaximize(win, yes);
+          bringToFront(win);
+        }
+      });
+    });
+
+    layer.appendChild(win);
+    bringToFront(win);
+
+    state.windows.set(id, { el: win, minimized:false, title, icon });
+    createTaskButton({id, title, icon});
+    hydrateWindow(win, id);
+  }
+
   // ---------- WINDOWS ----------
   const WINDOWS = {
-    "win-intro": { id:"win-intro", title:"Cours complet", icon:"📚", badge:"Cycle & méthode", contentHTML:introHTML(), width: 860, height: 560 },
-    "win-refrigerants": { id:"win-refrigerants", title:"Fluides frigorigènes", icon:"🧪", badge:"Base + filtre", contentHTML:refrigerantsHTML(), width: 980, height: 560 },
-    "win-components": { id:"win-components", title:"Composants", icon:"🧰", badge:"Tout le matériel", contentHTML:componentsHTML(), width: 900, height: 560 },
-    "win-calculators": { id:"win-calculators", title:"Calculateurs", icon:"🧮", badge:"SH • SC • COP", contentHTML:calculatorsHTML(), width: 900, height: 560 },
-    "win-phdiagram": { id:"win-phdiagram", title:"Diagramme P-h", icon:"📈", badge:"Tracé + tableau", contentHTML:phDiagramHTML(), width: 1100, height: 650 },
-    "win-converter": { id:"win-converter", title:"Convertisseur", icon:"🔁", badge:"Unités", contentHTML:converterHTML(), width: 900, height: 560 },
-    "win-videos": { id:"win-videos", title:"Vidéos", icon:"🎬", badge:"Cours", contentHTML:videosHTML(), width: 1100, height: 650 },
-    "win-diagnostics": { id:"win-diagnostics", title:"Diagnostic", icon:"🔎", badge:"Symptômes → causes", contentHTML:diagnosticsHTML(), width: 860, height: 560 },
-    "win-safety": { id:"win-safety", title:"Sécurité", icon:"🦺", badge:"Bonnes pratiques", contentHTML:safetyHTML(), width: 860, height: 520 },
-    "win-note": { id:"win-note", title:"Bloc-notes", icon:"📝", badge:"local", contentHTML:noteHTML(), width: 640, height: 520 },
-    "win-about": { id:"win-about", title:"À propos", icon:"ℹ️", badge:"FrigoLab", contentHTML:aboutHTML(), width: 660, height: 420 }
+    "win-intro": { id:"win-intro", title:"Cours complet", icon:"📚", badge:"Cycle & méthode", contentHTML:introHTML(), width: 900, height: 580 },
+    "win-refrigerants": { id:"win-refrigerants", title:"Fluides", icon:"🧪", badge:"Base + filtre", contentHTML:refrigerantsHTML(), width: 1020, height: 580 },
+    "win-components": { id:"win-components", title:"Composants", icon:"🧰", badge:"Système frigorifique", contentHTML:componentsHTML(), width: 980, height: 580 },
+    "win-calculators": { id:"win-calculators", title:"Calculateurs", icon:"🧮", badge:"SH • SC • COP", contentHTML:calculatorsHTML(), width: 980, height: 580 },
+    "win-phdiagram": { id:"win-phdiagram", title:"Diagramme P-h", icon:"📈", badge:"Tracé + tableau", contentHTML:phDiagramHTML(), width: 1120, height: 680 },
+    "win-converter": { id:"win-converter", title:"Convertisseur", icon:"🔁", badge:"Unités", contentHTML:converterHTML(), width: 980, height: 580 },
+    "win-pressure": { id:"win-pressure", title:"Pressions", icon:"🌡️", badge:"Saturation (tables)", contentHTML:pressureHTML(), width: 980, height: 620 },
+    "win-mtbf": { id:"win-mtbf", title:"MTBF & Fiabilité", icon:"📊", badge:"BTS Maintenance", contentHTML:mtbfHTML(), width: 1100, height: 650 },
+    "win-regs": { id:"win-regs", title:"Réglementation UE", icon:"📜", badge:"F-Gas & sécurité", contentHTML:regsHTML(), width: 1050, height: 650 },
+    "win-videos": { id:"win-videos", title:"Vidéos", icon:"🎬", badge:"Cours", contentHTML:videosHTML(), width: 1120, height: 680 },
+    "win-diagnostics": { id:"win-diagnostics", title:"Diagnostic", icon:"🔎", badge:"Symptômes → causes", contentHTML:diagnosticsHTML(), width: 940, height: 600 },
+    "win-safety": { id:"win-safety", title:"Sécurité", icon:"🦺", badge:"Bonnes pratiques", contentHTML:safetyHTML(), width: 920, height: 560 },
+    "win-note": { id:"win-note", title:"Bloc-notes", icon:"📝", badge:"local", contentHTML:noteHTML(), width: 680, height: 540 },
+    "win-about": { id:"win-about", title:"À propos", icon:"ℹ️", badge:"FrigoLab", contentHTML:aboutHTML(), width: 720, height: 420 }
   };
 
   // ---------- Desktop open ----------
@@ -980,13 +1290,19 @@
     hideStart();
   });
 
-  // Start search shortcuts
   globalSearch.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     const term = (globalSearch.value || "").trim().toLowerCase();
     if (!term) return;
 
-    if (term.includes("r") || term.includes("co2") || term.includes("nh3") || term.includes("a2l") || term.includes("gwp")){
+    if (term.includes("mtbf") || term.includes("mttr") || term.includes("fiabil")) { openWindow(WINDOWS["win-mtbf"]); hideStart(); return; }
+    if (term.includes("f-gas") || term.includes("reg") || term.includes("ue")) { openWindow(WINDOWS["win-regs"]); hideStart(); return; }
+    if (term.includes("pression") || term.includes("sat")) { openWindow(WINDOWS["win-pressure"]); hideStart(); return; }
+    if (term.includes("p-h") || term.includes("enthal")) { openWindow(WINDOWS["win-phdiagram"]); hideStart(); return; }
+    if (term.includes("cop") || term.includes("surch") || term.includes("sous")) { openWindow(WINDOWS["win-calculators"]); hideStart(); return; }
+    if (term.includes("panne") || term.includes("hp") || term.includes("bp")) { openWindow(WINDOWS["win-diagnostics"]); hideStart(); return; }
+    if (term.includes("video") || term.includes("vidéo")) { openWindow(WINDOWS["win-videos"]); hideStart(); return; }
+    if (term.includes("r") || term.includes("co2") || term.includes("nh3") || term.includes("a2l") || term.includes("gwp")) {
       openWindow(WINDOWS["win-refrigerants"]);
       setTimeout(() => {
         const w = state.windows.get("win-refrigerants");
@@ -997,28 +1313,16 @@
       }, 50);
       hideStart(); return;
     }
-    if (term.includes("cop") || term.includes("surchauffe") || term.includes("sous")){
-      openWindow(WINDOWS["win-calculators"]); hideStart(); return;
-    }
-    if (term.includes("p-h") || term.includes("enthalpie") || term.includes("ph")){
-      openWindow(WINDOWS["win-phdiagram"]); hideStart(); return;
-    }
-    if (term.includes("convert")){
-      openWindow(WINDOWS["win-converter"]); hideStart(); return;
-    }
-    if (term.includes("video") || term.includes("vidéo")){
-      openWindow(WINDOWS["win-videos"]); hideStart(); return;
-    }
-    if (term.includes("panne") || term.includes("hp") || term.includes("bp")){
-      openWindow(WINDOWS["win-diagnostics"]); hideStart(); return;
-    }
+
     openWindow(WINDOWS["win-intro"]); hideStart();
   });
 
   // ---------- Top buttons ----------
   document.getElementById("btnOpenAll").addEventListener("click", () => {
-    ["win-intro","win-refrigerants","win-components","win-calculators","win-phdiagram","win-converter","win-videos","win-diagnostics","win-safety"]
-      .forEach(k => openWindow(WINDOWS[k]));
+    [
+      "win-intro","win-refrigerants","win-components","win-calculators","win-phdiagram",
+      "win-converter","win-pressure","win-mtbf","win-regs","win-videos","win-diagnostics","win-safety"
+    ].forEach(k => openWindow(WINDOWS[k]));
   });
   document.getElementById("btnNewNote").addEventListener("click", () => openWindow(WINDOWS["win-note"]));
 
